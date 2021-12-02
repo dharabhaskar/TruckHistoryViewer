@@ -1,0 +1,60 @@
+<template data-controller-name="com.infocusTruckHistoryViewer.controller.MainView">
+	<div data-sap-ui-type="sap.m.App">
+		<div data-sap-ui-type="sap.m.Page" data-title="{i18n>title}">
+			<div data-sap-ui-aggregation="content">
+				<div id="map" style="width: 100%;height: 700px;"></div>
+				
+				<div class="main">
+					<form method="post">
+						<table>
+							<tr>
+								<td>Start Date<td>
+								<td><input type="date" id="startDate"/></td>
+							</tr>
+							<tr>
+								<td>End Date<td>
+								<td><input type="date" id="endDate"/></td>
+							</tr>
+							<tr>
+								<td>Truck No<td>
+								<td><select id="truckNo"><option value="">--Select Truck No.--</option></select></td>
+							</tr>
+							<tr>
+								<td><td>
+								<td style="text-align:left	"><input type="button" id="btnSubmit" value="Show History"/></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				
+				
+				<!--<script src="model/script.js"></script>-->
+				<script>
+					//var base="https://test-serv.movam.ng/api/v1";
+					// var base="https://movam.ng/api/v1";
+					// var tokenURL=base+"/getToken";
+					// data={
+					//     "email":"sumit@infocus-in.com",
+					//     "password":"12345678",
+					//     "role":"shipper"
+					// };
+					// fetch(tokenURL,{
+					// 	method:"POST",
+					// 	headers:{
+					// 		"Content-Type":"application/json",
+					// 		"Accept":"application/json"
+					// 	},
+					// 	body: JSON.stringify(data)	
+					// }).then(response => response.json())
+					// .then(response => {
+					// 	var token=response.data.token;
+					//     //console.log('Success:', response.data.token);
+					// })
+					// .catch((error) => {
+					//   console.error('Error:', error);
+					// });
+				</script>
+			</div>
+		</div>
+	</div>
+</template>

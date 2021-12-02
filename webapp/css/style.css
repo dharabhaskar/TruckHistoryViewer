@@ -1,0 +1,31 @@
+/* Enter your custom styles here */
+.main{
+	--input-width: 100%;
+	--input-height: 20px;
+	z-index:10;	
+	background:#fff;
+	position:absolute;
+	top:75px;
+	left:10px;
+	opacity:1;
+	border-radius:5px;
+	padding:16px;
+}
+.main table{
+	text-align:center;
+}
+.main td{
+	padding:5px;
+	text-align:left;
+}
+
+.main select, .main input{
+	width: var(--input-width);
+	height: var(--input-height);
+}
+.main select, .main input:focus{
+	outline: 0;
+}
+.main select{
+	width: calc(var(--input-width) + 7px);
+}
