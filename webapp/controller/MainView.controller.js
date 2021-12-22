@@ -1,38 +1,73 @@
+/* global dataTable:true */
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/m/MessageBox",
-], function(Controller, MessageBox) {
+	"sap/ui/core/BusyIndicator",
+	"com/infocusTruckHistoryViewer/utils/DataManager",
+	"com/infocusTruckHistoryViewer/libs/dataTable.min",
+], function(Controller, MessageBox, BusyIndicator, DataManager, dataTable) {
 	"use strict";
 	var map;
 	return Controller.extend("com.infocusTruckHistoryViewer.controller.MainView", {
-
 		onInit: async function() {
 			var _self = this;
-			_self.base = "https://test-serv.movam.ng/api/v1";
-			_self.trackingBase = "https://trackapidev.movam.ng/api/devices";
+			_self.data = {};
+			_self.getView().setModel(new sap.ui.model.json.JSONModel(_self.data), "dataSet");
 
-			var key2 = 'AIzaSyDNFTiOxDtjntYTjvlD89SdP8CHVptOp3A';
+			var model = _self.getView().getModel("dataSet");
+
 			var key1 = 'AIzaSyAsjidHqlFl7k0kmvv4sGmU5ngUFA-3m5k';
 
 			//Add google api
 			window.addEventListener('load', function() {
 				var script = document.createElement('script');
 				script.type = 'text/javascript';
-				script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAsjidHqlFl7k0kmvv4sGmU5ngUFA-3m5k&avoid=TOLLS&libraries=places';
+				script.src = `https://maps.googleapis.com/maps/api/js?key=${key1}&avoid=TOLLS&libraries=places`;
 				document.body.appendChild(script);
 			});
 
 			//Add click event
-
 			$(document).on("click", "#btnSubmit", function(event) {
 				_self.onSubmitPress();
 			});
+			$(document).on("click", "#btnShowData", function(event) {
+				_self.showDataClicked();
+			});
+			
+			var allSel=[];
+			
+			$('#truckNo').change(function(e){
+			   var ele=document.getElementById('truckNo');
+			   var ind = Array.from(ele.selectedOptions).map(item=>item.index);
+			   /*if(ind.length>2){
+				ind[2].selected=false;
+				//console.log(ind)
+			   }*/
+			   //allSel.push(e.target.selectedIndex);
+			   //console.log(this.options[e.target.selectedIndex].text);
+			   console.log(allSel)
+			   var diff=ind.filter(x => !allSel.includes(x));
+			   console.log(diff[0])
+			   
+			   diff.forEach(x=>allSel.push(x))
+			   
+			   if($("#truckNo").val().length>2){
+			    	sap.m.MessageBox.alert("You can select max 2 vehicle at a time.");
+			    	this.options[diff[0]].selected=false;
+			    	allSel=[];
+			    }
+			   
+			   /*if(allSel.length>0){
+			   	  this.options[allSel[0]].selected=false;
+			   }*/
+			   
+			});
 
 			try {
-				_self.token = await _self.getToken();
-				//console.log(token);
-				var vehcilesResp = await _self.getAllVehicles(_self.token);
-				console.log(vehcilesResp);
+				BusyIndicator.show();
+				_self.token = await DataManager.getToken();
+				var vehcilesResp = await DataManager.getAllVehicles(_self.token);
+
 				vehcilesResp.data.forEach(v => {
 					var optionValue = v.id;
 					var optionText = v.vehicleNo;
@@ -40,126 +75,33 @@ sap.ui.define([
 						`<option value="${optionValue}">
 	                                       ${optionText}
 	                                  </option>`
-					)
+					);
 				});
 				_self.initMap();
 
+				BusyIndicator.hide();
+
 			} catch (error) {
+				BusyIndicator.hide();
 				console.log(error);
 			}
 
 			//Initial date values...
-			$('#startDate').val('2021-11-09');
-			$('#endDate').val('2021-11-09');
+			$('#startDate').val('2021-12-20');
+			$('#endDate').val('2021-12-21');
 
-		},
-		getToken: function() {
-			var tokenUrl = this.base + "/get-token";
-			var data = {
-				"email": "movamtransporter@protonmail.com",
-				"password": "12345678",
-				"role": "transporter"
-			};
-			/*var data= {
-				"email":"sumit@infocus-in.in",
-				"password": "12345678",
-				"role": "shipper"
-			};*/
-			return new Promise(function(resolve, reject) {
-				$.ajax({
-					url: tokenUrl,
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"Accept": "application/json"
-					},
-					data: JSON.stringify(data),
-					success: function(response) {
-						if (response.statusCode !== 200) {
-							reject(response.message);
-							return
-						}
-						var token = response.data.token;
-						//console.log(token);
-						resolve(token);
-					},
-					error: function(err) {
-						reject(err);
-					}
-				});
-			});
-		},
-		getBacktraking: function(token, data) {
-			var url = this.trackingBase + "/backtracking";
-			/*var data = {
-				"vehicleId": data.truckNo,
-				"fromDate": data.startDate,
-				"toDate": data.endDate
-			};*/
-			return new Promise(function(resolve, reject) {
-				$.ajax({
-					url: url,
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"Accept": "application/json",
-						"Authorization": "Bearer " + token
-					},
-					data: JSON.stringify(data),
-					success: function(response) {
-						//var token = response.data.token;
-						console.log(response);
-						if (response.status == 200) {
-							var locations = response.data.map(l => {
-								return {
-									lat: l.latitude,
-									lng: l.longitude
-								}
-							});
-							/*locations = locations.filter(function(item, pos) {
-								return locations.map(l => l.lat).indexOf(item.lat) == pos
-							})*/
-							resolve(locations);
-						} else {
-							reject(response.message);
-							return
-						}
-					},
-					error: function(err) {
-						reject(err);
-					}
-				});
-			});
-		},
-		getAllVehicles: function(token) {
-			var vehiclesApiUrl = this.base + "/vehicles";
-			return new Promise(function(resolve, reject) {
-				$.ajax({
-					url: vehiclesApiUrl,
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						"Accept": "application/json",
-						"Authorization": "Bearer " + token
-					},
-					success: function(response) {
-						if (response.statusCode !== 200) {
-							reject(response.message);
-							return
-						}
-						resolve(response);
-					},
-					error: function(err) {
-						reject(err);
-					}
-				});
-			});
 		},
 		getFormData: function() {
 			var data = {};
 			data.fromDate = $("#startDate").val();
 			data.toDate = $("#endDate").val();
 			data.vehicleId = $("#truckNo").val();
+			data.vehicleNo = $("#truckNo option:selected").text();
+			//data.vehicleNo = $('#truckNo').find(":selected").text()
+
+			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
+			console.log(vNos);
+			data.vehicleNo = vNos;
 
 			var isValid = true;
 			var msg = '';
@@ -182,129 +124,239 @@ sap.ui.define([
 
 			data.fromDate += 'T00:00:00.000Z';
 			data.toDate += 'T23:59:59.000Z';
+
+			console.log(data);
+
 			return data;
 		},
 		onSubmitPress: async function() {
 			var _self = this;
 			try {
-				//var token= await _self.getToken();
-				//console.log(token);
 				var data = _self.getFormData();
 				if (data === false) {
 					return;
 				}
-				//console.log(data);
-				var backtraking = await _self.getBacktraking(_self.token, data);
-				console.log(backtraking);
-				var start = backtraking[0];
-				//backtraking.splice(0, 1)
-				var end = backtraking[backtraking.length - 1];
-				//backtraking.splice(backtraking.length - 1, 1)
-				//var end = backtraking[52];
+				BusyIndicator.show();
+				var response = await DataManager.getBacktraking(_self.token, data);
+				BusyIndicator.hide();
 
-				console.log('start: ', start);
-				console.log('end: ', end);
-				console.log(backtraking)
-
-				/*_self.addMarker({
-					location: start
+				//var backtraking = response.map(r => r.location);
+				//var extras = response.map(r => r.info);
+				var extras = [];
+				var i = 1;
+				response.forEach(item => {
+					//var ex = item.map(r => r.info)
+					item.forEach(r => {
+						var info = r.info;
+						info.slno = i;
+						extras.push(r.info);
+						i += 1;
+					})
 				})
+				//console.log(extras);
+				var model = _self.getView().getModel("dataSet");
+				model.setProperty("/extras", extras);
 
-				_self.addMarker({
-					location: end
-				})*/
+				//$('#btnSubmit').value='Add More Truck';
 
-				//console.log(_self.getWaypoints(backtraking));
-				/*var wpnts =[];
-				var i=0;
-				backtraking.filter((item,pos)=>pos%100==0).forEach((p,i)=>{
-					wpnts.push({
-						location:backtraking[i],
-						stopover:false
-					});
-				});
-				
-				var request = {
-					origin: start,
-					destination: end,
-					waypoints: wpnts,
-					optimizeWaypoints: true,
-					travelMode: google.maps.DirectionsTravelMode.DRIVING
-				};
+				//console.log(response);
 
-				_self.directionService.route(request, function(response, status) {
-					if (status == google.maps.DirectionsStatus.OK) {
-						//print the route
-						_self.directionsDispaly.setDirections(response);
-					} else {
-						console.log('something went wrong', status);
-					}
-
-				});*/
-				
-				_self.initMap(backtraking);
+				_self.initMap(response);
 
 			} catch (error) {
+				BusyIndicator.hide();
 				console.log(error);
 				MessageBox.alert(error);
 			}
 		},
-		initMap: function(backtraking) {
+		buildDataTable: function() {
+			var table = this.byId('data-table');
+			var colName = new sap.m.Column("colName", {
+				header: new sap.m.Label({
+					text: "Name"
+				})
+			});
+			var colTime = new sap.m.Column("colTime", {
+				header: new sap.m.Label({
+					text: "Time"
+				})
+			});
+			var colAddress = new sap.m.Column("colAddress", {
+				header: new sap.m.Label({
+					text: "Address"
+				})
+			});
+			var colSpeed = new sap.m.Column("colSpeed", {
+				header: new sap.m.Label({
+					text: "Speed"
+				})
+			});
+
+			var colIgnition = new sap.m.Column("colIgnition", {
+				header: new sap.m.Label({
+					text: "Ignition"
+				})
+			});
+
+			table.bindItems("dataSet>/extras", new sap.m.ColumnListItem({
+				cells: [new sap.m.Text({
+						text: "{dataSet>name}"
+					}),
+					new sap.m.Text({
+						text: "{dataSet>time}"
+					}),
+					new sap.m.Text({
+						text: "{dataSet>address}"
+					}),
+					new sap.m.Text({
+						text: "{dataSet>speed}",
+					}),
+					new sap.m.Text({
+						text: "{dataSet>ignition}"
+					}),
+				]
+			}));
+			table.addColumn(colName);
+			table.addColumn(colTime);
+			table.addColumn(colAddress);
+			table.addColumn(colSpeed);
+			table.addColumn(colIgnition);
+
+		},
+		showDataClicked: function() {
+			var that = this;
+			if (!that.resizableDialog) {
+				var oTable = new sap.m.Table("tab-1", {
+					inset: true,
+					mode: sap.m.ListMode.None,
+					includeItemInSelection: false,
+				});
+				var col1 = new sap.m.Column("col1", {
+					header: new sap.m.Label({
+						text: "Truck No"
+					}),
+					width: "8rem"
+				});
+				var col2 = new sap.m.Column("col2", {
+					header: new sap.m.Label({
+						text: "Date Time"
+					}),
+					width: "10rem"
+				});
+				var col3 = new sap.m.Column("col3", {
+					header: new sap.m.Label({
+						text: "Address"
+					})
+				});
+
+				var col4 = new sap.m.Column("col4", {
+					header: new sap.m.Label({
+						text: "Speed"
+					}),
+					width: "4rem"
+				});
+
+				var col5 = new sap.m.Column("col5", {
+					header: new sap.m.Label({
+						text: "Ignition"
+					}),
+					width: "4rem"
+				});
+
+				oTable.bindItems("dataSet>/extras", new sap.m.ColumnListItem({
+					cells: [new sap.m.Text({
+						text: "{dataSet>name}"
+					}), new sap.m.Text({
+						text: "{dataSet>time}"
+					}), new sap.m.Text({
+						text: "{dataSet>address}"
+					}), new sap.m.Text({
+						text: "{dataSet>speed}"
+					}), new sap.m.Text({
+						text: "{dataSet>ignition}"
+					})]
+				}));
+
+				oTable.addColumn(col1);
+				oTable.addColumn(col2);
+				oTable.addColumn(col3);
+				oTable.addColumn(col4);
+				oTable.addColumn(col5);
+
+				that.resizableDialog = new sap.m.Dialog({
+					title: 'Truck History Details',
+					contentWidth: "850px",
+					contentHeight: "300px",
+					resizable: true,
+					content: oTable,
+					beginButton: new sap.m.Button({
+						text: 'Close',
+						press: function() {
+							that.resizableDialog.close();
+						}
+					})
+				});
+
+				//to get access to the global model
+				this.getView().addDependent(that.resizableDialog);
+			}
+
+			that.resizableDialog.open();
+
+			//this._getDialog().open();
+		},
+		initMap: function(data) {
 			var _self = this;
 			_self.directionService = new google.maps.DirectionsService();
 			_self.directionsDispaly = new google.maps.DirectionsRenderer();
-			var cpoint = {
+
+			var options = {
+				center: {
 					lat: 4.814781666666667,
 					lng: 7.050083333333333
-				}
-			if(backtraking){
-				cpoint=backtraking[parseInt(backtraking.length/2)];
-				console.log(cpoint);
-			}
-				//var start = new google.maps.LatLng(22.739863132828788, 88.3241438143934);
-				//var end = new google.maps.LatLng(22.706316193093127, 88.34563177228142);
-			var options = {
-				center: cpoint,
+				},
 				zoom: 11
 			};
-			console.log(cpoint);
-
-			//Init map
-			/*map = new google.maps.Map(document.getElementById("map"), options);
-			_self.map = map;
-			_self.directionsDispaly.setMap(map)*/
-
-			/*var request = {
-				origin: start,
-				destination: end,
-				//waypoints: _self.getWaypoints(backtraking),
-				//optimizeWaypoints: true,
-				travelMode: google.maps.DirectionsTravelMode.DRIVING
-			};
-
-			_self.directionService.route(request, function(response, status) {
-				if (status == google.maps.DirectionsStatus.OK) {
-					//print the route
-					_self.directionsDispaly.setDirections(response);
-				} else {
-					console.log('something went wrong', status);
-				}
-
-			});*/
 
 			map = new google.maps.Map(document.getElementById("map"), options);
 
-			if (backtraking) {
-				const flightPath = new google.maps.Polyline({
-					path: backtraking,
-					geodesic: true,
-					strokeColor: "#FF0000",
-					strokeOpacity: 1.0,
-					strokeWeight: 2,
-				});
+			var i=0;
+			var latlngbounds = new google.maps.LatLngBounds();
+			var colors=["#FF0000","#0000FF"];
+			data.forEach(item =>{
+				
+				var backtraking = item.map(r => r.location);
+				console.log(backtraking);
+				if (backtraking && backtraking.length >= 2) {
+					const trackingPath = new google.maps.Polyline({
+						path: backtraking /*.filter((item,pos)=>pos>150)*/ ,
+						geodesic: true,
+						strokeColor: colors[i],
+						strokeOpacity: 0.7,
+						strokeWeight: 5,
+					});
 
-				flightPath.setMap(map);
-			}
+					trackingPath.setMap(map);
+
+					_self.addMarker({
+						location: backtraking[0]
+					});
+					_self.addMarker({
+						location: backtraking[backtraking.length - 1]
+					});
+
+					/*var latlngbounds = new google.maps.LatLngBounds();
+					for (var i = 0; i < backtraking.length; i++) {
+						latlngbounds.extend(backtraking[i]);
+					}
+					map.fitBounds(latlngbounds);*/
+					latlngbounds.extend(backtraking[i]);
+				}
+				
+				i+=1;
+
+			});
+			map.fitBounds(latlngbounds)
 		},
 		getWaypoints: function(locations) {
 			var locations = locations
@@ -321,7 +373,7 @@ sap.ui.define([
 		addMarker: function(props) {
 			var marker = new google.maps.Marker({
 				position: props.location,
-				map: this.map
+				map: map
 			})
 			if (props.icon) {
 				marker.setIcon(props.icon)
