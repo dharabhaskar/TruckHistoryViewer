@@ -10,6 +10,7 @@ sap.ui.define([
 	var map;
 	return Controller.extend("com.infocusTruckHistoryViewer.controller.MainView", {
 		onInit: async function() {
+
 			var _self = this;
 			_self.data = {};
 			_self.getView().setModel(new sap.ui.model.json.JSONModel(_self.data), "dataSet");
@@ -33,34 +34,34 @@ sap.ui.define([
 			$(document).on("click", "#btnShowData", function(event) {
 				_self.showDataClicked();
 			});
-			
-			var allSel=[];
-			
-			$('#truckNo').change(function(e){
-			   var ele=document.getElementById('truckNo');
-			   var ind = Array.from(ele.selectedOptions).map(item=>item.index);
-			   /*if(ind.length>2){
+
+			var allSel = [];
+
+			$('#truckNo').change(function(e) {
+				var ele = document.getElementById('truckNo');
+				var ind = Array.from(ele.selectedOptions).map(item => item.index);
+				/*if(ind.length>2){
 				ind[2].selected=false;
 				//console.log(ind)
 			   }*/
-			   //allSel.push(e.target.selectedIndex);
-			   //console.log(this.options[e.target.selectedIndex].text);
-			   console.log(allSel)
-			   var diff=ind.filter(x => !allSel.includes(x));
-			   console.log(diff[0])
-			   
-			   diff.forEach(x=>allSel.push(x))
-			   
-			   if($("#truckNo").val().length>2){
-			    	sap.m.MessageBox.alert("You can select max 2 vehicle at a time.");
-			    	this.options[diff[0]].selected=false;
-			    	allSel=[];
-			    }
-			   
-			   /*if(allSel.length>0){
-			   	  this.options[allSel[0]].selected=false;
-			   }*/
-			   
+				//allSel.push(e.target.selectedIndex);
+				//console.log(this.options[e.target.selectedIndex].text);
+				console.log(allSel)
+				var diff = ind.filter(x => !allSel.includes(x));
+				console.log(diff[0])
+
+				diff.forEach(x => allSel.push(x))
+
+				if ($("#truckNo").val().length > 2) {
+					sap.m.MessageBox.alert("You can select max 2 vehicle at a time.");
+					this.options[diff[0]].selected = false;
+					allSel = [];
+				}
+
+				/*if(allSel.length>0){
+					  this.options[allSel[0]].selected=false;
+				}*/
+
 			});
 
 			try {
@@ -101,7 +102,7 @@ sap.ui.define([
 
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
 			console.log(vNos);
-			data.vehicleNo = vNos;
+			/*data.vehicleNo = vNos;*/
 
 			var isValid = true;
 			var msg = '';
@@ -145,15 +146,15 @@ sap.ui.define([
 				var extras = [];
 				var i = 1;
 				response.forEach(item => {
-					//var ex = item.map(r => r.info)
-					item.forEach(r => {
-						var info = r.info;
-						info.slno = i;
-						extras.push(r.info);
-						i += 1;
+						//var ex = item.map(r => r.info)
+						item.forEach(r => {
+							var info = r.info;
+							info.slno = i;
+							extras.push(r.info);
+							i += 1;
+						})
 					})
-				})
-				//console.log(extras);
+					//console.log(extras);
 				var model = _self.getView().getModel("dataSet");
 				model.setProperty("/extras", extras);
 
@@ -317,14 +318,15 @@ sap.ui.define([
 				},
 				zoom: 11
 			};
-
+			
+			// map location
 			map = new google.maps.Map(document.getElementById("map"), options);
 
-			var i=0;
+			var i = 0;
 			var latlngbounds = new google.maps.LatLngBounds();
-			var colors=["#FF0000","#0000FF"];
-			data.forEach(item =>{
-				
+			var colors = ["#0000FF","#FF0000"];
+			data.forEach(item => {
+
 				var backtraking = item.map(r => r.location);
 				console.log(backtraking);
 				if (backtraking && backtraking.length >= 2) {
@@ -338,7 +340,7 @@ sap.ui.define([
 
 					trackingPath.setMap(map);
 
-					_self.addMarker({
+					_self.addMarker1({
 						location: backtraking[0]
 					});
 					_self.addMarker({
@@ -352,8 +354,8 @@ sap.ui.define([
 					map.fitBounds(latlngbounds);*/
 					latlngbounds.extend(backtraking[i]);
 				}
-				
-				i+=1;
+
+				i += 1;
 
 			});
 			map.fitBounds(latlngbounds)
@@ -378,6 +380,20 @@ sap.ui.define([
 			if (props.icon) {
 				marker.setIcon(props.icon)
 			}
+		},
+		addMarker1: function(props) {
+			var marker = new google.maps.Marker({
+				position: props.location,
+				map: map,
+				icon: {
+					path: ,
+					scale: 8.5,
+					fillColor: "#0000FF",
+					fillOpacity: 0.7,
+					strokeWeight: 0.5
+				},
+			})
 		}
+
 	});
 });
