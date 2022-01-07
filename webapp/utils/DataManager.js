@@ -83,7 +83,7 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 					},
 					error: function(jqXHR, exception) {
 						if (jqXHR.status === 0) {
-							reject("Not connected verify network.")
+							reject("Not connected veryfy network.")
 						} else if (jqXHR.status >= 500 && jqXHR.status <= 599) {
 							reject(`Internal server error [${jqXHR.status}].`)
 						}

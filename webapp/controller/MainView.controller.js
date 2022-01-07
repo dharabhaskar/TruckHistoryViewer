@@ -41,6 +41,9 @@ sap.ui.define([
 			script.src = `https://maps.googleapis.com/maps/api/js?key=${key1}&avoid=TOLLS`;
 			document.body.appendChild(script);
 			//$("head").append(script);
+=======
+				document.body.appendChild(script);
+			});
 
 			//Add click event
 			$(document).on("click", "#btnSubmit", function(event) {
@@ -77,6 +80,35 @@ sap.ui.define([
 					  this.options[allSel[0]].selected=false;
 				}*/
 
+=======
+			
+			var allSel=[];
+			
+			$('#truckNo').change(function(e){
+			   var ele=document.getElementById('truckNo');
+			   var ind = Array.from(ele.selectedOptions).map(item=>item.index);
+			   /*if(ind.length>2){
+				ind[2].selected=false;
+				//console.log(ind)
+			   }*/
+			   //allSel.push(e.target.selectedIndex);
+			   //console.log(this.options[e.target.selectedIndex].text);
+			   console.log(allSel)
+			   var diff=ind.filter(x => !allSel.includes(x));
+			   console.log(diff[0])
+			   
+			   diff.forEach(x=>allSel.push(x))
+			   
+			   if($("#truckNo").val().length>2){
+			    	sap.m.MessageBox.alert("You can select max 2 vehicle at a time.");
+			    	this.options[diff[0]].selected=false;
+			    	allSel=[];
+			    }
+			   
+			   /*if(allSel.length>0){
+			   	  this.options[allSel[0]].selected=false;
+			   }*/
+			   
 			});
 
 			try {
@@ -175,6 +207,27 @@ sap.ui.define([
 
 				//$('#btnSubmit').value='Add More Truck';
 
+=======
+
+				//var backtraking = response.map(r => r.location);
+				//var extras = response.map(r => r.info);
+				var extras = [];
+				var i = 1;
+				response.forEach(item => {
+					//var ex = item.map(r => r.info)
+					item.forEach(r => {
+						var info = r.info;
+						info.slno = i;
+						extras.push(r.info);
+						i += 1;
+					})
+				})
+				//console.log(extras);
+				var model = _self.getView().getModel("dataSet");
+				model.setProperty("/extras", extras);
+
+				//$('#btnSubmit').value='Add More Truck';
+
 				//console.log(response);
 
 				_self.initMap(response);
@@ -248,6 +301,7 @@ sap.ui.define([
 					includeItemInSelection: false,
 					growing: true,
 					growingThreshold: 1000
+=======
 				});
 				var col1 = new sap.m.Column("col1", {
 					header: new sap.m.Label({
@@ -387,6 +441,44 @@ sap.ui.define([
 					sap.m.MessageBox('Empty result.');
 				}
 			}
+=======
+			var i=0;
+			var latlngbounds = new google.maps.LatLngBounds();
+			var colors=["#FF0000","#0000FF"];
+			data.forEach(item =>{
+				
+				var backtraking = item.map(r => r.location);
+				console.log(backtraking);
+				if (backtraking && backtraking.length >= 2) {
+					const trackingPath = new google.maps.Polyline({
+						path: backtraking /*.filter((item,pos)=>pos>150)*/ ,
+						geodesic: true,
+						strokeColor: colors[i],
+						strokeOpacity: 0.7,
+						strokeWeight: 5,
+					});
+
+					trackingPath.setMap(map);
+
+					_self.addMarker({
+						location: backtraking[0]
+					});
+					_self.addMarker({
+						location: backtraking[backtraking.length - 1]
+					});
+
+					/*var latlngbounds = new google.maps.LatLngBounds();
+					for (var i = 0; i < backtraking.length; i++) {
+						latlngbounds.extend(backtraking[i]);
+					}
+					map.fitBounds(latlngbounds);*/
+					latlngbounds.extend(backtraking[i]);
+				}
+				
+				i+=1;
+
+			});
+			map.fitBounds(latlngbounds)
 		},
 		getWaypoints: function(locations) {
 			var locations = locations
