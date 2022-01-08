@@ -15,7 +15,11 @@
         "id": 9501463,
         "runnerId": "webapprunner",
         "displayName": "Run MainView.view.html",
+<<<<<<< HEAD
+        "lastRunTimeStamp": 1641618987875
+=======
         "lastRunTimeStamp": 1641456492830
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
       }
     }
   ]
