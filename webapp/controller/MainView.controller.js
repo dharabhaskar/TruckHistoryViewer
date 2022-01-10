@@ -10,7 +10,6 @@ sap.ui.define([
 	var map;
 	return Controller.extend("com.infocusTruckHistoryViewer.controller.MainView", {
 		onInit: async function() {
-
 			var _self = this;
 			_self.data = {};
 			_self.getView().setModel(new sap.ui.model.json.JSONModel(_self.data), "dataSet");
@@ -21,30 +20,9 @@ sap.ui.define([
 
 			//Add google api
 			jQuery.sap.addUrlWhitelist("https", "maps.googleapis.com");
-			/*window.addEventListener('load', function() {
-				var script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.src = `https://maps.googleapis.com/maps/api/js?key=${key1}&avoid=TOLLS&libraries=places`;
-				//document.body.appendChild(script);
-				$("head").append(s);
-				console.log("page loaded...")
-			});*/
-			/*	$(window).on('load', function() {
-					var script = document.createElement('script');
-					script.type = 'text/javascript';
-					script.src = `https://maps.googleapis.com/maps/api/js?key=${key1}&avoid=TOLLS&libraries=places`;
-					//document.body.appendChild(script);
-					$("head").append(script);
-					console.log("page loaded...")
-				});*/
 			var script = document.createElement('script');
 			script.type = 'text/javascript';
 			script.src = `https://maps.googleapis.com/maps/api/js?key=${key1}&avoid=TOLLS`;
-			document.body.appendChild(script);
-			//$("head").append(script);
-=======
-				document.body.appendChild(script);
-			});
 
 			//Add click event
 			$(document).on("click", "#btnSubmit", function(event) {
@@ -59,13 +37,6 @@ sap.ui.define([
 			$('#truckNo').change(function(e) {
 				var ele = document.getElementById('truckNo');
 				var ind = Array.from(ele.selectedOptions).map(item => item.index);
-				/*if(ind.length>2){
-<<<<<<< HEAD
-				ind[2].selected=false;
-				//console.log(ind)
-			   }*/
-				//allSel.push(e.target.selectedIndex);
-				//console.log(this.options[e.target.selectedIndex].text);
 				console.log(allSel)
 				var diff = ind.filter(x => !allSel.includes(x));
 				console.log(diff[0])
@@ -77,41 +48,6 @@ sap.ui.define([
 					this.options[diff[0]].selected = false;
 					allSel = [];
 				}
-
-				/*if(allSel.length>0){
-					  this.options[allSel[0]].selected=false;
-				}*/
-
-=======
-			
-			var allSel=[];
-			
-			$('#truckNo').change(function(e){
-			   var ele=document.getElementById('truckNo');
-			   var ind = Array.from(ele.selectedOptions).map(item=>item.index);
-			   /*if(ind.length>2){
-=======
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
-				ind[2].selected=false;
-				//console.log(ind)
-			   }*/
-				//allSel.push(e.target.selectedIndex);
-				//console.log(this.options[e.target.selectedIndex].text);
-				console.log(allSel)
-				var diff = ind.filter(x => !allSel.includes(x));
-				console.log(diff[0])
-
-				diff.forEach(x => allSel.push(x))
-
-				if ($("#truckNo").val().length > 2) {
-					sap.m.MessageBox.alert("You can select max 2 vehicle at a time.");
-					this.options[diff[0]].selected = false;
-					allSel = [];
-				}
-
-				/*if(allSel.length>0){
-					  this.options[allSel[0]].selected=false;
-				}*/
 
 			});
 
@@ -153,7 +89,7 @@ sap.ui.define([
 
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
 			console.log(vNos);
-			/*data.vehicleNo = vNos;*/
+			data.vehicleNo = vNos;
 
 			var isValid = true;
 			var msg = '';
@@ -204,37 +140,10 @@ sap.ui.define([
 							extras.push(r.info);
 							i += 1;
 						})
-<<<<<<< HEAD
 					})
 					//console.log(extras);
 				var model = _self.getView().getModel("dataSet");
 				model.setProperty("/extras", extras);
-
-				//$('#btnSubmit').value='Add More Truck';
-
-=======
-
-				//var backtraking = response.map(r => r.location);
-				//var extras = response.map(r => r.info);
-				var extras = [];
-				var i = 1;
-				response.forEach(item => {
-					//var ex = item.map(r => r.info)
-					item.forEach(r => {
-						var info = r.info;
-						info.slno = i;
-						extras.push(r.info);
-						i += 1;
-=======
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
-					})
-					//console.log(extras);
-				var model = _self.getView().getModel("dataSet");
-				model.setProperty("/extras", extras);
-
-				//$('#btnSubmit').value='Add More Truck';
-
-				//console.log(response);
 
 				_self.initMap(response);
 
@@ -307,7 +216,6 @@ sap.ui.define([
 					includeItemInSelection: false,
 					growing: true,
 					growingThreshold: 1000
-=======
 				});
 				var col1 = new sap.m.Column("col1", {
 					header: new sap.m.Label({
@@ -385,8 +293,8 @@ sap.ui.define([
 		},
 		initMap: function(data) {
 			var _self = this;
-			_self.directionService = new google.maps.DirectionsService();
-			_self.directionsDispaly = new google.maps.DirectionsRenderer();
+			//_self.directionService = new google.maps.DirectionsService();
+			//_self.directionsDispaly = new google.maps.DirectionsRenderer();
 
 			var options = {
 				center: {
@@ -395,11 +303,9 @@ sap.ui.define([
 				},
 				zoom: 11
 			};
-			
+
 			// map location
 			map = new google.maps.Map(document.getElementById("map"), options);
-
-<<<<<<< HEAD
 			_self.i = 0;
 			var latlngbounds = new google.maps.LatLngBounds();
 			_self.colors = ["#FF0000", "#0000FF"];
@@ -449,13 +355,7 @@ sap.ui.define([
 					sap.m.MessageBox('Empty result.');
 				}
 			}
-=======
-			var i=0;
-=======
 			var i = 0;
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
-			var latlngbounds = new google.maps.LatLngBounds();
-			var colors = ["#0000FF","#FF0000"];
 			data.forEach(item => {
 
 				var backtraking = item.map(r => r.location);
@@ -517,7 +417,6 @@ sap.ui.define([
 				position: props.location,
 				map: map,
 				icon: {
-					path: ,
 					scale: 8.5,
 					fillColor: "#0000FF",
 					fillOpacity: 0.7,
