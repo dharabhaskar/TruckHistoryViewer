@@ -1,4 +1,7 @@
 /* Enter your custom styles here */
+.flex-container{
+	position:relative;
+}
 .main{
 	--input-width: 100%;
 	--input-height: 20px;
@@ -10,6 +13,7 @@
 	opacity:1;
 	border-radius:5px;
 	padding:16px;
+
 }
 .main table{
 	text-align:center;
@@ -28,6 +32,35 @@
 }
 .main select{
 	width: calc(var(--input-width) + 7px);
+}
+
+#btn {
+	width:50px;
+	
+}
+#btn img{
+	width:100%;
+}
+
+#hide{
+	position:absolute;
+	top:12px;
+	left:240px;
+	margin-top:5px;
+	padding-top:3px;
+	width:28px;
+}
+/*.cross{
+	width:2%;
+}*/
+
+.cross img{
+	width:100%;
+}
+
+#hide:hover{
+	color:#1e90ff;
+	border:1px solid black;
 }
 
 .multiselect {

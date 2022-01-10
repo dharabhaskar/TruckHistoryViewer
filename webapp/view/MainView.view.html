@@ -3,8 +3,14 @@
 		<div data-sap-ui-type="sap.m.Page" data-title="{i18n>title}">
 			<div class="flex-container">
 				<div id="map" style="width: 100%;height: 700px;"></div>
-				<div class="main">
-					<form method="post">
+<!--				<div>
+					<button id="btn">Show</button>
+				</div>-->
+				<div class="main" id="main">
+					<button id="btn">
+						<img src="./images/icons8-truck-50.png" alt="img">
+					</button>
+					<form method="post" id="form">
 						<table>
 							<tr>
 								<td>Start Date<td>
@@ -27,6 +33,11 @@
 								<td style="text-align:left"><input enabled="false" type="button" id="btnShowData" value="Show Tabular Data"/></td>
 							</tr>
 						</table>
+						<button type="button" id="hide">
+							<div class="cross">
+								<img src="./images/cross.png" alt="img">
+							</div>
+						</button>
 					</form>
 				</div>
 			</div>

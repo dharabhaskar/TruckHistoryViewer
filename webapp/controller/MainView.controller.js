@@ -27,6 +27,14 @@ sap.ui.define([
 			//Add click event
 			$(document).on("click", "#btnSubmit", function(event) {
 				_self.onSubmitPress();
+				
+/*			var hide=document.getElementById('hide');
+			
+			hide.addEventListener('click',()=>{
+				form.style.display="none";
+				
+			});*/
+			
 			});
 			$(document).on("click", "#btnShowData", function(event) {
 				_self.showDataClicked();
@@ -77,8 +85,38 @@ sap.ui.define([
 			//Initial date values...
 			$('#startDate').val('2021-12-20');
 			$('#endDate').val('2021-12-21');
+			
+			// btn,form,main,btnSubmit
+			var btn=document.getElementById('btn');
+			var form=document.getElementById('form');
+			var hide=document.getElementById('hide');
+			var main=document.getElementById('main');
+			var btnSubmit=document.getElementById('btnSubmit');
+			
+			
+
+			hide.addEventListener('click',()=>{
+				form.style.display="none";
+				main.style.clipPath="polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
+				btn.style.marginRight="7px";
+			});
+			btn.addEventListener('click',()=>{
+				form.style.display="block";
+				main.style.clipPath="none";
+			});
+			
+			btnSubmit.addEventListener('click',()=>{
+				form.style.display="none";
+				main.style.clipPath="polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
+				btn.style.marginRight="7px";
+			})
+			
 
 		},
+/*		Vno:function(){
+			var Vnos={};
+			console.log(Vnos);
+		},*/
 		getFormData: function() {
 			var data = {};
 			data.fromDate = $("#startDate").val();
@@ -88,8 +126,17 @@ sap.ui.define([
 			//data.vehicleNo = $('#truckNo').find(":selected").text()
 
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
+/*			Vno.Vnos= vNos;*/
 			console.log(vNos);
+<<<<<<< HEAD
 			data.vehicleNo = vNos;
+=======
+<<<<<<< HEAD
+/*			console.log(Vno);*/
+=======
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
+			/*data.vehicleNo = vNos;*/
+>>>>>>> c0ce827eeeddd7e92139e59d8f7b2d20211fa907
 
 			var isValid = true;
 			var msg = '';
@@ -145,13 +192,23 @@ sap.ui.define([
 				var model = _self.getView().getModel("dataSet");
 				model.setProperty("/extras", extras);
 
+<<<<<<< HEAD
 				_self.initMap(response);
+=======
+				//$('#btnSubmit').value='Add More Truck';
+
+				 console.log(response,data);
+				 var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
+				 console.log(vNos);
+				_self.initMap(response,vNos);
+>>>>>>> c0ce827eeeddd7e92139e59d8f7b2d20211fa907
 
 			} catch (error) {
 				BusyIndicator.hide();
 				console.log(error);
 				MessageBox.alert(error);
 			}
+			
 		},
 		buildDataTable: function() {
 			var table = this.byId('data-table');
@@ -291,7 +348,7 @@ sap.ui.define([
 
 			//this._getDialog().open();
 		},
-		initMap: function(data) {
+		initMap: function(data,vNos) {
 			var _self = this;
 			//_self.directionService = new google.maps.DirectionsService();
 			//_self.directionsDispaly = new google.maps.DirectionsRenderer();
@@ -301,7 +358,8 @@ sap.ui.define([
 					lat: 4.814781666666667,
 					lng: 7.050083333333333
 				},
-				zoom: 11
+				zoom: 11,
+				mapTypeId: 'satellite',
 			};
 
 			// map location
@@ -356,6 +414,17 @@ sap.ui.define([
 				}
 			}
 			var i = 0;
+<<<<<<< HEAD
+=======
+			var latlngbounds = new google.maps.LatLngBounds();
+			var colors = ["#0000FF","#FF0000"];
+<<<<<<< HEAD
+			var Vno=vNos[i];
+			console.log(Vno);
+			
+=======
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
+>>>>>>> c0ce827eeeddd7e92139e59d8f7b2d20211fa907
 			data.forEach(item => {
 
 				var backtraking = item.map(r => r.location);
@@ -372,10 +441,16 @@ sap.ui.define([
 					trackingPath.setMap(map);
 
 					_self.addMarker1({
+<<<<<<< HEAD
+						location: backtraking[0],
+						title:vNos[i]
+=======
 						location: backtraking[0]
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 					});
 					_self.addMarker({
-						location: backtraking[backtraking.length - 1]
+						location: backtraking[backtraking.length - 1],
+						title:vNos[i]
 					});
 
 					/*var latlngbounds = new google.maps.LatLngBounds();
@@ -406,10 +481,54 @@ sap.ui.define([
 		addMarker: function(props) {
 			var marker = new google.maps.Marker({
 				position: props.location,
-				map: map
+				map: map,
+				animation:google.maps.Animation.Drop
 			})
 			if (props.icon) {
 				marker.setIcon(props.icon)
+<<<<<<< HEAD
+			};
+/*            var infowindow = new google.maps.InfoWindow({
+               content:props.title
+            });
+            infowindow.open(map,marker);
+            console.log(props.title);*/
+            var infowindow = new google.maps.InfoWindow();
+			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
+            return function() {
+                var content = props.title;
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+            }
+          })(marker));
+		},
+		addMarker1: function(props) {
+			var marker = new google.maps.Marker({
+				position: props.location,
+				map: map,
+				animation:google.maps.Animation.Drop,
+				icon: {
+					path: google.maps.SymbolPath.CIRCLE,
+					scale: 8.5,
+					fillColor: "#0000FF",
+					fillOpacity: 0.7,
+					strokeWeight: 0.5,
+				}
+			});
+/*			 var infowindow = new google.maps.InfoWindow({
+               content:props.title
+            });
+            infowindow.open(map,marker);*/
+             var infowindow = new google.maps.InfoWindow();
+			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
+            return function() {
+                var content = props.title;
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+            }
+          })(marker));
+		},
+=======
 			}
 		},
 		addMarker1: function(props) {
@@ -424,6 +543,7 @@ sap.ui.define([
 				},
 			})
 		}
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
 	});
 });
