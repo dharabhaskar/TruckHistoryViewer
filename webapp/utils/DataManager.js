@@ -51,30 +51,7 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 						console.log(response);
 						if (response.status == 200) {
 							console.log(response);
-							var i = 0;
-							var data = response.result.map(item => item.data).map(result => {
-								//console.log(item);
-								var locations = result.filter(function(item, pos) {
-									return result.map(l => l.latitude).indexOf(item.latitude) == pos
-								}).map(l => {
-									return {
-										location: {
-											lat: l.latitude,
-											lng: l.longitude
-										},
-										info: {
-											name: formData.vehicleNo[i],
-											time: _self.formatDate(new Date(l.deviceTime)),
-											address: l.address,
-											speed: l.speed,
-											ignition: l.attributes.ignition ? "Yes" : "No"
-										}
-									}
-								});
-								i+=1;
-								return locations;
-								//return item;
-							});
+							var data = _self.processData(response, formData);
 							resolve(data);
 						} else {
 							reject(response.message);
@@ -90,6 +67,48 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 						}
 					}
 				});
+			});
+		},
+		processData: function(response, formData) {
+			var _self=this;
+			var i=0;
+			if (!formData) {
+				formData = {
+					"fromDate": "2022-01-01T00:00:00.000Z",
+					"toDate": "2022-01-02T23:59:59.000Z",
+					"vehicleId": [
+						"12",
+						"14"
+					],
+					"vehicleNo": [
+						"FST 37 YC",
+						"FST 38 NC"
+					]
+				};
+			}
+			console.log(response);
+			return response.result.map(item => item.data).map(result => {
+				//console.log(item);
+				var locations = result.filter(function(item, pos) {
+					return result.map(l => l.latitude).indexOf(item.latitude) == pos
+				}).map(l => {
+					return {
+						location: {
+							lat: l.latitude,
+							lng: l.longitude
+						},
+						info: {
+							name: formData.vehicleNo[i],
+							time: _self.formatDate(new Date(l.deviceTime)),
+							address: l.address,
+							speed: l.speed,
+							ignition: l.attributes.ignition ? "Yes" : "No"
+						}
+					}
+				});
+				i += 1;
+				return locations;
+				//return item;
 			});
 		},
 		getAllVehicles: function(token) {

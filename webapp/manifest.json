@@ -64,14 +64,16 @@
 				"settings": {
 					"bundleName": "com.infocusTruckHistoryViewer.i18n.i18n"
 				}
+			},
+			"testdata_backtracking": {
+				"type": "sap.ui.model.json.JSONModel",
+				"uri": "data/backtracking.json"
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		}
 	},
 	"sap.platform.abap": {

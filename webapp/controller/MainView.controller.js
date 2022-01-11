@@ -84,7 +84,7 @@ sap.ui.define([
 
 			//Initial date values...
 			$('#startDate').val('2022-01-01');
-			$('#endDate').val('2022-01-02');
+			$('#endDate').val('2022-01-05');
 
 			// btn,form,main,btnSubmit
 			var btn = document.getElementById('btn');
@@ -125,13 +125,7 @@ sap.ui.define([
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
 			/*			Vno.Vnos= vNos;*/
 			console.log(vNos);
-<<<<<<< HEAD
-/*			console.log(Vno);*/
-			/*data.vehicleNo = vNos;*/
-
-=======
 			data.vehicleNo = vNos;
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 			var isValid = true;
 			var msg = '';
 			if (data.fromDate == '') {
@@ -167,6 +161,11 @@ sap.ui.define([
 				}
 				BusyIndicator.show();
 				var response = await DataManager.getBacktraking(_self.token, data);
+				/*var response = _self.getView().getModel("testdata_backtracking").getProperty("/data");
+				response = await DataManager.processData(response);*/
+
+				console.log(response);
+
 				BusyIndicator.hide();
 
 				//var backtraking = response.map(r => r.location);
@@ -194,7 +193,7 @@ sap.ui.define([
 			} catch (error) {
 				BusyIndicator.hide();
 				console.log(error);
-				MessageBox.alert(error);
+				sap.m.MessageBox.alert(error);
 			}
 
 		},
@@ -351,16 +350,8 @@ sap.ui.define([
 			map = new google.maps.Map(document.getElementById("map"), options);
 			_self.i = 0;
 			var latlngbounds = new google.maps.LatLngBounds();
-<<<<<<< HEAD
-			var colors = ["#0000FF","#FF0000"];
-			var Vno=vNos[i];
-			console.log(Vno);
-			
-			data.forEach(item => {
-=======
 			_self.colors = ["#FF0000", "#0000FF"];
 			console.log(_self.colors[_self.i]);
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
 			var mapDrawSuccess = false;
 			if (data) {
@@ -378,18 +369,7 @@ sap.ui.define([
 							strokeWeight: 5,
 						});
 
-<<<<<<< HEAD
-					_self.addMarker1({
-						location: backtraking[0],
-						title:vNos[i]
-					});
-					_self.addMarker({
-						location: backtraking[backtraking.length - 1],
-						title:vNos[i]
-					});
-=======
 						trackingPath.setMap(map);
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
 						/*_self.addMarker({
 							location: backtraking[0]
@@ -444,11 +424,11 @@ sap.ui.define([
 			if (props.icon) {
 				marker.setIcon(props.icon)
 			};
-			/*            var infowindow = new google.maps.InfoWindow({
-			               content:props.title
-			            });
-			            infowindow.open(map,marker);
-			            console.log(props.title);*/
+			/*var infowindow = new google.maps.InfoWindow({
+               content:props.title
+            });
+            infowindow.open(map,marker);
+            console.log(props.title);*/
 			var infowindow = new google.maps.InfoWindow();
 			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
 				return function() {
@@ -471,10 +451,7 @@ sap.ui.define([
 					strokeWeight: 0.5,
 				}
 			});
-			/*			 var infowindow = new google.maps.InfoWindow({
-			               content:props.title
-			            });
-			            infowindow.open(map,marker);*/
+
 			var infowindow = new google.maps.InfoWindow();
 			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
 				return function() {
