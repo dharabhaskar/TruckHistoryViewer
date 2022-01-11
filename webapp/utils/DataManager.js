@@ -84,7 +84,7 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 					error: function(jqXHR, exception) {
 						console.log(jqXHR);
 						if (jqXHR.status === 0) {
-							reject("Not connected. Verify network.")
+							reject("Backtracking call failed.")
 						} else if (jqXHR.status >= 500 && jqXHR.status <= 599) {
 							reject(`Internal server error [${jqXHR.status}].`)
 						}
