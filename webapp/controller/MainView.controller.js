@@ -141,10 +141,7 @@ sap.ui.define([
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
 /*			Vno.Vnos= vNos;*/
 			console.log(vNos);
-<<<<<<< HEAD
 /*			console.log(Vno);*/
-=======
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 			/*data.vehicleNo = vNos;*/
 
 			var isValid = true;
@@ -371,12 +368,9 @@ sap.ui.define([
 			var i = 0;
 			var latlngbounds = new google.maps.LatLngBounds();
 			var colors = ["#0000FF","#FF0000"];
-<<<<<<< HEAD
 			var Vno=vNos[i];
 			console.log(Vno);
 			
-=======
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 			data.forEach(item => {
 
 				var backtraking = item.map(r => r.location);
@@ -393,12 +387,8 @@ sap.ui.define([
 					trackingPath.setMap(map);
 
 					_self.addMarker1({
-<<<<<<< HEAD
 						location: backtraking[0],
 						title:vNos[i]
-=======
-						location: backtraking[0]
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 					});
 					_self.addMarker({
 						location: backtraking[backtraking.length - 1],
@@ -438,7 +428,6 @@ sap.ui.define([
 			})
 			if (props.icon) {
 				marker.setIcon(props.icon)
-<<<<<<< HEAD
 			};
 /*            var infowindow = new google.maps.InfoWindow({
                content:props.title
@@ -480,23 +469,6 @@ sap.ui.define([
             }
           })(marker));
 		},
-=======
-			}
-		},
-		addMarker1: function(props) {
-			var marker = new google.maps.Marker({
-				position: props.location,
-				map: map,
-				icon: {
-					path: ,
-					scale: 8.5,
-					fillColor: "#0000FF",
-					fillOpacity: 0.7,
-					strokeWeight: 0.5
-				},
-			})
-		}
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
 	});
 });
