@@ -10,7 +10,6 @@ sap.ui.define([
 	var map;
 	return Controller.extend("com.infocusTruckHistoryViewer.controller.MainView", {
 		onInit: async function() {
-
 			var _self = this;
 			_self.data = {};
 			_self.getView().setModel(new sap.ui.model.json.JSONModel(_self.data), "dataSet");
@@ -20,24 +19,22 @@ sap.ui.define([
 			var key1 = 'AIzaSyAsjidHqlFl7k0kmvv4sGmU5ngUFA-3m5k';
 
 			//Add google api
-			window.addEventListener('load', function() {
-				var script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.src = `https://maps.googleapis.com/maps/api/js?key=${key1}&avoid=TOLLS&libraries=places`;
-				document.body.appendChild(script);
-			});
+			jQuery.sap.addUrlWhitelist("https", "maps.googleapis.com");
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = `https://maps.googleapis.com/maps/api/js?key=${key1}&avoid=TOLLS`;
 
 			//Add click event
 			$(document).on("click", "#btnSubmit", function(event) {
 				_self.onSubmitPress();
-				
-/*			var hide=document.getElementById('hide');
-			
-			hide.addEventListener('click',()=>{
-				form.style.display="none";
-				
-			});*/
-			
+
+				/*			var hide=document.getElementById('hide');
+							
+							hide.addEventListener('click',()=>{
+								form.style.display="none";
+								
+							});*/
+
 			});
 			$(document).on("click", "#btnShowData", function(event) {
 				_self.showDataClicked();
@@ -48,12 +45,6 @@ sap.ui.define([
 			$('#truckNo').change(function(e) {
 				var ele = document.getElementById('truckNo');
 				var ind = Array.from(ele.selectedOptions).map(item => item.index);
-				/*if(ind.length>2){
-				ind[2].selected=false;
-				//console.log(ind)
-			   }*/
-				//allSel.push(e.target.selectedIndex);
-				//console.log(this.options[e.target.selectedIndex].text);
 				console.log(allSel)
 				var diff = ind.filter(x => !allSel.includes(x));
 				console.log(diff[0])
@@ -65,10 +56,6 @@ sap.ui.define([
 					this.options[diff[0]].selected = false;
 					allSel = [];
 				}
-
-				/*if(allSel.length>0){
-					  this.options[allSel[0]].selected=false;
-				}*/
 
 			});
 
@@ -96,40 +83,37 @@ sap.ui.define([
 			}
 
 			//Initial date values...
-			$('#startDate').val('2021-12-20');
-			$('#endDate').val('2021-12-21');
-			
-			// btn,form,main,btnSubmit
-			var btn=document.getElementById('btn');
-			var form=document.getElementById('form');
-			var hide=document.getElementById('hide');
-			var main=document.getElementById('main');
-			var btnSubmit=document.getElementById('btnSubmit');
-			
-			
+			$('#startDate').val('2022-01-01');
+			$('#endDate').val('2022-01-02');
 
-			hide.addEventListener('click',()=>{
-				form.style.display="none";
-				main.style.clipPath="polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
-				btn.style.marginRight="7px";
+			// btn,form,main,btnSubmit
+			var btn = document.getElementById('btn');
+			var form = document.getElementById('form');
+			var hide = document.getElementById('hide');
+			var main = document.getElementById('main');
+			var btnSubmit = document.getElementById('btnSubmit');
+
+			hide.addEventListener('click', () => {
+				form.style.display = "none";
+				main.style.clipPath = "polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
+				btn.style.marginRight = "7px";
 			});
-			btn.addEventListener('click',()=>{
-				form.style.display="block";
-				main.style.clipPath="none";
+			btn.addEventListener('click', () => {
+				form.style.display = "block";
+				main.style.clipPath = "none";
 			});
-			
-			btnSubmit.addEventListener('click',()=>{
-				form.style.display="none";
-				main.style.clipPath="polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
-				btn.style.marginRight="7px";
+
+			btnSubmit.addEventListener('click', () => {
+				form.style.display = "none";
+				main.style.clipPath = "polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
+				btn.style.marginRight = "7px";
 			})
-			
 
 		},
-/*		Vno:function(){
-			var Vnos={};
-			console.log(Vnos);
-		},*/
+		/*		Vno:function(){
+					var Vnos={};
+					console.log(Vnos);
+				},*/
 		getFormData: function() {
 			var data = {};
 			data.fromDate = $("#startDate").val();
@@ -139,11 +123,15 @@ sap.ui.define([
 			//data.vehicleNo = $('#truckNo').find(":selected").text()
 
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
-/*			Vno.Vnos= vNos;*/
+			/*			Vno.Vnos= vNos;*/
 			console.log(vNos);
+<<<<<<< HEAD
 /*			console.log(Vno);*/
 			/*data.vehicleNo = vNos;*/
 
+=======
+			data.vehicleNo = vNos;
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 			var isValid = true;
 			var msg = '';
 			if (data.fromDate == '') {
@@ -198,19 +186,17 @@ sap.ui.define([
 				var model = _self.getView().getModel("dataSet");
 				model.setProperty("/extras", extras);
 
-				//$('#btnSubmit').value='Add More Truck';
-
-				 console.log(response,data);
-				 var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
-				 console.log(vNos);
-				_self.initMap(response,vNos);
+				console.log(response, data);
+				//var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
+				//console.log(vNos);
+				_self.initMap(response, data.vehicleNo);
 
 			} catch (error) {
 				BusyIndicator.hide();
 				console.log(error);
 				MessageBox.alert(error);
 			}
-			
+
 		},
 		buildDataTable: function() {
 			var table = this.byId('data-table');
@@ -273,6 +259,8 @@ sap.ui.define([
 					inset: true,
 					mode: sap.m.ListMode.None,
 					includeItemInSelection: false,
+					growing: true,
+					growingThreshold: 1000
 				});
 				var col1 = new sap.m.Column("col1", {
 					header: new sap.m.Label({
@@ -348,44 +336,49 @@ sap.ui.define([
 
 			//this._getDialog().open();
 		},
-		initMap: function(data,vNos) {
+		initMap: function(data, vNos) {
 			var _self = this;
-			_self.directionService = new google.maps.DirectionsService();
-			_self.directionsDispaly = new google.maps.DirectionsRenderer();
-
 			var options = {
 				center: {
 					lat: 4.814781666666667,
 					lng: 7.050083333333333
 				},
 				zoom: 11,
-				mapTypeId: 'satellite',
+				//mapTypeId: 'satellite',
 			};
-			
+
 			// map location
 			map = new google.maps.Map(document.getElementById("map"), options);
-
-			var i = 0;
+			_self.i = 0;
 			var latlngbounds = new google.maps.LatLngBounds();
+<<<<<<< HEAD
 			var colors = ["#0000FF","#FF0000"];
 			var Vno=vNos[i];
 			console.log(Vno);
 			
 			data.forEach(item => {
+=======
+			_self.colors = ["#FF0000", "#0000FF"];
+			console.log(_self.colors[_self.i]);
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
-				var backtraking = item.map(r => r.location);
-				console.log(backtraking);
-				if (backtraking && backtraking.length >= 2) {
-					const trackingPath = new google.maps.Polyline({
-						path: backtraking /*.filter((item,pos)=>pos>150)*/ ,
-						geodesic: true,
-						strokeColor: colors[i],
-						strokeOpacity: 0.7,
-						strokeWeight: 5,
-					});
+			var mapDrawSuccess = false;
+			if (data) {
+				data.forEach(item => {
 
-					trackingPath.setMap(map);
+					var backtraking = item.map(r => r.location);
+					console.log(backtraking);
+					if (backtraking && backtraking.length >= 2) {
+						mapDrawSuccess = true;
+						const trackingPath = new google.maps.Polyline({
+							path: backtraking /*.filter((item,pos)=>pos>150)*/ ,
+							geodesic: true,
+							strokeColor: _self.colors[_self.i],
+							strokeOpacity: 0.7,
+							strokeWeight: 5,
+						});
 
+<<<<<<< HEAD
 					_self.addMarker1({
 						location: backtraking[0],
 						title:vNos[i]
@@ -394,19 +387,41 @@ sap.ui.define([
 						location: backtraking[backtraking.length - 1],
 						title:vNos[i]
 					});
+=======
+						trackingPath.setMap(map);
+>>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
-					/*var latlngbounds = new google.maps.LatLngBounds();
-					for (var i = 0; i < backtraking.length; i++) {
-						latlngbounds.extend(backtraking[i]);
+						/*_self.addMarker({
+							location: backtraking[0]
+						});
+						_self.addMarker({
+							location: backtraking[backtraking.length - 1]
+						});*/
+						_self.addMarker1({
+							location: backtraking[0],
+							title: vNos[_self.i]
+						});
+						_self.addMarker({
+							location: backtraking[backtraking.length - 1],
+							title: vNos[_self.i]
+						});
+
+						//var latlngbounds = new google.maps.LatLngBounds();
+						for (var i = 0; i < backtraking.length; i++) {
+							latlngbounds.extend(backtraking[i]);
+						}
+						//map.fitBounds(latlngbounds);
 					}
-					map.fitBounds(latlngbounds);*/
-					latlngbounds.extend(backtraking[i]);
+
+					_self.i += 1;
+
+				});
+				if (mapDrawSuccess) {
+					map.fitBounds(latlngbounds)
+				} else {
+					MessageBox('Empty result.');
 				}
-
-				i += 1;
-
-			});
-			map.fitBounds(latlngbounds)
+			}
 		},
 		getWaypoints: function(locations) {
 			var locations = locations
@@ -424,30 +439,30 @@ sap.ui.define([
 			var marker = new google.maps.Marker({
 				position: props.location,
 				map: map,
-				animation:google.maps.Animation.Drop
+				animation: google.maps.Animation.Drop
 			})
 			if (props.icon) {
 				marker.setIcon(props.icon)
 			};
-/*            var infowindow = new google.maps.InfoWindow({
-               content:props.title
-            });
-            infowindow.open(map,marker);
-            console.log(props.title);*/
-            var infowindow = new google.maps.InfoWindow();
+			/*            var infowindow = new google.maps.InfoWindow({
+			               content:props.title
+			            });
+			            infowindow.open(map,marker);
+			            console.log(props.title);*/
+			var infowindow = new google.maps.InfoWindow();
 			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
-            return function() {
-                var content = props.title;
-                infowindow.setContent(content);
-                infowindow.open(map, marker);
-            }
-          })(marker));
+				return function() {
+					var content = props.title;
+					infowindow.setContent(content);
+					infowindow.open(map, marker);
+				}
+			})(marker));
 		},
 		addMarker1: function(props) {
 			var marker = new google.maps.Marker({
 				position: props.location,
 				map: map,
-				animation:google.maps.Animation.Drop,
+				animation: google.maps.Animation.Drop,
 				icon: {
 					path: google.maps.SymbolPath.CIRCLE,
 					scale: 8.5,
@@ -456,18 +471,18 @@ sap.ui.define([
 					strokeWeight: 0.5,
 				}
 			});
-/*			 var infowindow = new google.maps.InfoWindow({
-               content:props.title
-            });
-            infowindow.open(map,marker);*/
-             var infowindow = new google.maps.InfoWindow();
+			/*			 var infowindow = new google.maps.InfoWindow({
+			               content:props.title
+			            });
+			            infowindow.open(map,marker);*/
+			var infowindow = new google.maps.InfoWindow();
 			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
-            return function() {
-                var content = props.title;
-                infowindow.setContent(content);
-                infowindow.open(map, marker);
-            }
-          })(marker));
+				return function() {
+					var content = props.title;
+					infowindow.setContent(content);
+					infowindow.open(map, marker);
+				}
+			})(marker));
 		},
 
 	});

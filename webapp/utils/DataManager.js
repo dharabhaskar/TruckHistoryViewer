@@ -53,7 +53,7 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 							console.log(response);
 							var i = 0;
 							var data = response.result.map(item => item.data).map(result => {
-								/*console.log(item);*/
+								//console.log(item);
 								var locations = result.filter(function(item, pos) {
 									return result.map(l => l.latitude).indexOf(item.latitude) == pos
 								}).map(l => {
@@ -82,8 +82,9 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 						}
 					},
 					error: function(jqXHR, exception) {
+						console.log(jqXHR);
 						if (jqXHR.status === 0) {
-							reject("Not connected veryfy network.")
+							reject("Backtracking call failed.")
 						} else if (jqXHR.status >= 500 && jqXHR.status <= 599) {
 							reject(`Internal server error [${jqXHR.status}].`)
 						}
