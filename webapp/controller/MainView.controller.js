@@ -84,7 +84,7 @@ sap.ui.define([
 
 			//Initial date values...
 			$('#startDate').val('2022-01-01');
-			$('#endDate').val('2022-01-02');
+			$('#endDate').val('2022-01-05');
 
 			// btn,form,main,btnSubmit
 			var btn = document.getElementById('btn');
@@ -92,6 +92,7 @@ sap.ui.define([
 			var hide = document.getElementById('hide');
 			var main = document.getElementById('main');
 			var btnSubmit = document.getElementById('btnSubmit');
+			var path= document.getElementById('path');
 
 			hide.addEventListener('click', () => {
 				form.style.display = "none";
@@ -107,13 +108,10 @@ sap.ui.define([
 				form.style.display = "none";
 				main.style.clipPath = "polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
 				btn.style.marginRight = "7px";
+				path.style.display= "block";
 			})
 
 		},
-		/*		Vno:function(){
-					var Vnos={};
-					console.log(Vnos);
-				},*/
 		getFormData: function() {
 			var data = {};
 			data.fromDate = $("#startDate").val();
@@ -123,15 +121,28 @@ sap.ui.define([
 			//data.vehicleNo = $('#truckNo').find(":selected").text()
 
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
-			/*			Vno.Vnos= vNos;*/
 			console.log(vNos);
-<<<<<<< HEAD
-/*			console.log(Vno);*/
-			/*data.vehicleNo = vNos;*/
+			
+			// path popup box
+			var i=0;
+			var vehicle1=document.getElementById('path1');
+			vehicle1.innerText=vNos[i];
+			console.log(vNos[i]);
+			i+=1;
+			
+			var vehicle2=document.getElementById('path2');
+			var view2=document.getElementById('div2');
+			if(!vNos[i]){
+				view2.style.display="none";                
+			}
+			else{
+				vehicle2.innerText=vNos[i];
+				view2.style.display="block"; 
+			}
 
-=======
+			console.log(vNos[i]);
+			
 			data.vehicleNo = vNos;
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 			var isValid = true;
 			var msg = '';
 			if (data.fromDate == '') {
@@ -167,6 +178,11 @@ sap.ui.define([
 				}
 				BusyIndicator.show();
 				var response = await DataManager.getBacktraking(_self.token, data);
+				/*var response = _self.getView().getModel("testdata_backtracking").getProperty("/data");
+				response = await DataManager.processData(response);*/
+
+				console.log(response);
+
 				BusyIndicator.hide();
 
 				//var backtraking = response.map(r => r.location);
@@ -194,7 +210,7 @@ sap.ui.define([
 			} catch (error) {
 				BusyIndicator.hide();
 				console.log(error);
-				MessageBox.alert(error);
+				sap.m.MessageBox.alert(error);
 			}
 
 		},
@@ -351,16 +367,8 @@ sap.ui.define([
 			map = new google.maps.Map(document.getElementById("map"), options);
 			_self.i = 0;
 			var latlngbounds = new google.maps.LatLngBounds();
-<<<<<<< HEAD
-			var colors = ["#0000FF","#FF0000"];
-			var Vno=vNos[i];
-			console.log(Vno);
-			
-			data.forEach(item => {
-=======
 			_self.colors = ["#FF0000", "#0000FF"];
 			console.log(_self.colors[_self.i]);
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
 			var mapDrawSuccess = false;
 			if (data) {
@@ -378,18 +386,7 @@ sap.ui.define([
 							strokeWeight: 5,
 						});
 
-<<<<<<< HEAD
-					_self.addMarker1({
-						location: backtraking[0],
-						title:vNos[i]
-					});
-					_self.addMarker({
-						location: backtraking[backtraking.length - 1],
-						title:vNos[i]
-					});
-=======
 						trackingPath.setMap(map);
->>>>>>> branch 'main' of https://github.com/dharabhaskar/TruckHistoryViewer.git
 
 						/*_self.addMarker({
 							location: backtraking[0]
@@ -444,19 +441,16 @@ sap.ui.define([
 			if (props.icon) {
 				marker.setIcon(props.icon)
 			};
-			/*            var infowindow = new google.maps.InfoWindow({
-			               content:props.title
-			            });
-			            infowindow.open(map,marker);
-			            console.log(props.title);*/
-			var infowindow = new google.maps.InfoWindow();
+
+/*			var infowindow = new google.maps.InfoWindow();
 			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
 				return function() {
 					var content = props.title;
 					infowindow.setContent(content);
 					infowindow.open(map, marker);
 				}
-			})(marker));
+			})(marker));*/
+
 		},
 		addMarker1: function(props) {
 			var marker = new google.maps.Marker({
@@ -471,18 +465,16 @@ sap.ui.define([
 					strokeWeight: 0.5,
 				}
 			});
-			/*			 var infowindow = new google.maps.InfoWindow({
-			               content:props.title
-			            });
-			            infowindow.open(map,marker);*/
-			var infowindow = new google.maps.InfoWindow();
+
+/*			var infowindow = new google.maps.InfoWindow();
 			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
 				return function() {
 					var content = props.title;
 					infowindow.setContent(content);
 					infowindow.open(map, marker);
 				}
-			})(marker));
+			})(marker));*/
+
 		},
 
 	});

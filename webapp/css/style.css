@@ -2,6 +2,38 @@
 .flex-container{
 	position:relative;
 }
+.path{
+	width:120px;
+/*	height:50px;*/
+	background:#fff;
+	position:absolute;
+	z-index:10;
+	top:10px;
+	left:85%;
+	border-radius:5px;
+	display:none;
+	font-size:13px;
+	box-shadow:0 0 5px lightgrey;
+/*	padding:10px;*/
+}
+.dot1{
+	width:12px;
+	height:12px;
+	background-color:#FF0000;
+	border-radius:50%;
+	display: inline-block;
+	margin-left:5px;
+	margin-right:5px;
+}
+.dot2{
+	width:12px;
+	height:12px;
+	background-color:#0000FF;
+	border-radius:50%;
+	display: inline-block;
+	margin-left:5px;
+	margin-right:5px;
+}
 .main{
 	--input-width: 100%;
 	--input-height: 20px;
