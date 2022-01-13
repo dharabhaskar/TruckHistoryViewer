@@ -92,7 +92,7 @@ sap.ui.define([
 			var hide = document.getElementById('hide');
 			var main = document.getElementById('main');
 			var btnSubmit = document.getElementById('btnSubmit');
-			var path= document.getElementById('path');
+			var path = document.getElementById('path');
 
 			hide.addEventListener('click', () => {
 				form.style.display = "none";
@@ -108,7 +108,8 @@ sap.ui.define([
 				form.style.display = "none";
 				main.style.clipPath = "polygon(0% 0%, 89% 0, 90% 42%, 100% 70%, 90% 77%, 90% 100%, 0 100%)";
 				btn.style.marginRight = "7px";
-				path.style.display= "block";
+				path.style.display = "block";
+
 			})
 
 		},
@@ -122,26 +123,29 @@ sap.ui.define([
 
 			var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
 			console.log(vNos);
-			
-			// path popup box
-			var i=0;
-			var vehicle1=document.getElementById('path1');
-			vehicle1.innerText=vNos[i];
-			console.log(vNos[i]);
-			i+=1;
-			
-			var vehicle2=document.getElementById('path2');
-			var view2=document.getElementById('div2');
-			if(!vNos[i]){
-				view2.style.display="none";                
-			}
-			else{
-				vehicle2.innerText=vNos[i];
-				view2.style.display="block"; 
-			}
 
-			console.log(vNos[i]);
-			
+			// path popup box
+			data.colors = ["#FF0000", "#00FF00"];
+			$("#path").empty();
+
+			vNos.forEach((v, i) => {
+				console.log(v, i);
+
+				$("#path").append(
+
+					`
+					<div style="padding:5px;">
+						<span id="span" class=${i==0?"dot1":"dot2"} style="background-color:${data.colors[i]};"></span>
+						<span id="span">${v}</span>
+					</div>
+
+					`
+				);
+
+			});
+
+			/*			console.log(vNos[i]);*/
+
 			data.vehicleNo = vNos;
 			var isValid = true;
 			var msg = '';
@@ -205,7 +209,7 @@ sap.ui.define([
 				console.log(response, data);
 				//var vNos = data.vehicleNo.split('\n\t').map(item => item.trim()).filter(item => item.length > 0);
 				//console.log(vNos);
-				_self.initMap(response, data.vehicleNo);
+				_self.initMap(response, data);
 
 			} catch (error) {
 				BusyIndicator.hide();
@@ -352,7 +356,7 @@ sap.ui.define([
 
 			//this._getDialog().open();
 		},
-		initMap: function(data, vNos) {
+		initMap: function(data, vData) {
 			var _self = this;
 			var options = {
 				center: {
@@ -367,13 +371,14 @@ sap.ui.define([
 			map = new google.maps.Map(document.getElementById("map"), options);
 			_self.i = 0;
 			var latlngbounds = new google.maps.LatLngBounds();
-			_self.colors = ["#FF0000", "#0000FF"];
-			console.log(_self.colors[_self.i]);
+/*			_self.colors = ["#FF0000", "#0000FF"];
+			console.log(_self.colors[_self.i]);*/
 
 			var mapDrawSuccess = false;
 			if (data) {
+				var vNos=vData.vehicleNo;
 				data.forEach(item => {
-
+					
 					var backtraking = item.map(r => r.location);
 					console.log(backtraking);
 					if (backtraking && backtraking.length >= 2) {
@@ -381,7 +386,7 @@ sap.ui.define([
 						const trackingPath = new google.maps.Polyline({
 							path: backtraking /*.filter((item,pos)=>pos>150)*/ ,
 							geodesic: true,
-							strokeColor: _self.colors[_self.i],
+							strokeColor: vData.colors[_self.i],
 							strokeOpacity: 0.7,
 							strokeWeight: 5,
 						});
@@ -396,6 +401,7 @@ sap.ui.define([
 						});*/
 						_self.addMarker1({
 							location: backtraking[0],
+							color: vData.colors[_self.i],
 							title: vNos[_self.i]
 						});
 						_self.addMarker({
@@ -442,14 +448,14 @@ sap.ui.define([
 				marker.setIcon(props.icon)
 			};
 
-/*			var infowindow = new google.maps.InfoWindow();
-			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
-				return function() {
-					var content = props.title;
-					infowindow.setContent(content);
-					infowindow.open(map, marker);
-				}
-			})(marker));*/
+			/*			var infowindow = new google.maps.InfoWindow();
+						google.maps.event.addListener(marker, 'mouseover', (function(marker) {
+							return function() {
+								var content = props.title;
+								infowindow.setContent(content);
+								infowindow.open(map, marker);
+							}
+						})(marker));*/
 
 		},
 		addMarker1: function(props) {
@@ -460,20 +466,20 @@ sap.ui.define([
 				icon: {
 					path: google.maps.SymbolPath.CIRCLE,
 					scale: 8.5,
-					fillColor: "#0000FF",
+					fillColor: props.color,
 					fillOpacity: 0.7,
 					strokeWeight: 0.5,
 				}
 			});
 
-/*			var infowindow = new google.maps.InfoWindow();
-			google.maps.event.addListener(marker, 'mouseover', (function(marker) {
-				return function() {
-					var content = props.title;
-					infowindow.setContent(content);
-					infowindow.open(map, marker);
-				}
-			})(marker));*/
+			/*			var infowindow = new google.maps.InfoWindow();
+						google.maps.event.addListener(marker, 'mouseover', (function(marker) {
+							return function() {
+								var content = props.title;
+								infowindow.setContent(content);
+								infowindow.open(map, marker);
+							}
+						})(marker));*/
 
 		},
 
