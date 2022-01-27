@@ -26,7 +26,8 @@
 				new sap.m.Shell({
 					app: new sap.ui.core.ComponentContainer({
 						height : "100%",
-						name : "com.infocusTruckHistoryViewer"
+						name : "com.infocusTruckHistoryViewer",
+						propagateModel: true
 					})
 				}).placeAt("content");
 			});

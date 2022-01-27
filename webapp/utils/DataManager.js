@@ -3,6 +3,24 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 	var base = "https://test-serv.movam.ng/api/v1";
 	var trackingBase = "https://trackapidev.movam.ng/api/devices";
 	return {
+
+		getTokenOdata: function(oModel) {
+			var tokenOdataUrl = "/TOKENSet";
+			return new Promise(function(resolve, reject) {
+				oModel.read(tokenOdataUrl, {
+					urlParameters: {
+						"Url": "X"
+					},
+					success: function(response) {
+						resolve(response);
+					},
+					error: function(err) {
+						reject(err);
+					}
+
+				});
+			});
+		},
 		getToken: function() {
 			var tokenUrl = base + "/get-token";
 			var data = {
@@ -70,8 +88,8 @@ com.infocusTruckHistoryViewer.utils.DataManager = (function() {
 			});
 		},
 		processData: function(response, formData) {
-			var _self=this;
-			var i=0;
+			var _self = this;
+			var i = 0;
 			if (!formData) {
 				formData = {
 					"fromDate": "2022-01-01T00:00:00.000Z",

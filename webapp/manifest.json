@@ -10,8 +10,18 @@
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
 		"sourceTemplate": {
-			"id": "ui5template.basicSAPUI5ApplicationProject",
-			"version": "1.40.12"
+			"id": "servicecatalog.connectivityComponent",
+			"version": "0.0.0"
+		},
+		"dataSources": {
+			"ZGWTM_TOKEN_SRV": {
+				"uri": "/sap/opu/odata/sap/ZGWTM_TOKEN_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				}
+			}
 		}
 	},
 	"sap.ui": {
@@ -68,6 +78,17 @@
 			"testdata_backtracking": {
 				"type": "sap.ui.model.json.JSONModel",
 				"uri": "data/backtracking.json"
+			},
+			"": {
+				"uri": "/sap/opu/odata/sap/ZGWTM_TOKEN_SRV/",
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBuindingMode": "OneWay",
+					"defaultCountMode": "Request"
+				},
+				"dataSource": "ZGWTM_TOKEN_SRV",
+				"preload": true
 			}
 		},
 		"resources": {

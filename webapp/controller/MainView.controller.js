@@ -9,12 +9,16 @@ sap.ui.define([
 	"use strict";
 	var map;
 	return Controller.extend("com.infocusTruckHistoryViewer.controller.MainView", {
-		onInit: async function() {
+		onInit:async function() {
 			var _self = this;
 			_self.data = {};
 			_self.getView().setModel(new sap.ui.model.json.JSONModel(_self.data), "dataSet");
 
 			var model = _self.getView().getModel("dataSet");
+			var model1= _self.getOwnerComponent().getModel();
+			console.log(model);
+			console.log(model1);
+			
 
 			var key1 = 'AIzaSyAsjidHqlFl7k0kmvv4sGmU5ngUFA-3m5k';
 
@@ -61,8 +65,9 @@ sap.ui.define([
 
 			try {
 				BusyIndicator.show();
-				_self.token = await DataManager.getToken();
-				var vehcilesResp = await DataManager.getAllVehicles(_self.token);
+				_self.token = await  DataManager.getTokenOdata(model1);
+				console.log(_self.token);
+				var vehcilesResp = await  DataManager.getAllVehicles(_self.token);
 
 				vehcilesResp.data.forEach(v => {
 					var optionValue = v.id;
@@ -110,7 +115,7 @@ sap.ui.define([
 				btn.style.marginRight = "7px";
 				path.style.display = "block";
 
-			})
+			});
 
 		},
 		getFormData: function() {
